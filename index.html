@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum adventures</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background: url('bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        #logo {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+        }
+
+        #toggleMenu, #toggleMenu2, #toggleMenuRefferals, #toggleMenuTasks {
+            position: fixed;
+            padding: 15px 30px;
+            background-color: rgba(51, 138, 255, 0.7);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        #toggleMenu {
+            top: 90%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 10px;
+        }
+
+        #toggleMenu2 {
+            top: 80%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #toggleMenuRefferals {
+            top: 95%;
+            left: 20%;
+            transform: translate(-50%, -50%);
+            font-size: 10px;
+        }
+
+        #toggleMenuTasks {
+            top: 95%;
+            left: 80%;
+            transform: translate(-50%, -50%);
+            font-size: 10px;
+        }
+
+        #ui, #upgradePage, #referralPage, #tasksPage {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            display: none; /* Hide initially */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #ui.open, #upgradePage.open, #referralPage.open, #tasksPage.open {
+            display: flex; /* Show when open */
+        }
+
+        .mining-animation {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: blue;
+            border-radius: 50%;
+            animation: mining 1s infinite alternate;
+        }
+
+        @keyframes mining {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.5); }
+        }
+
+        #startMining, #backToMain, #backToUpgrade, #backToTasks {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .parameter, .task {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+        }
+
+        .parameter img, .task img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.139.0/build/three.min.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="game.js" defer></script>
+</head>
+<body>
+    <img id="logo" src="logo.png" alt="Logo">
+
+    <button id="toggleMenu2">Start Mining</button>
+    <button id="toggleMenu">Upgrade</button>
+    <button id="toggleMenuRefferals">Referrals</button>
+    <button id="toggleMenuTasks">Tasks</button>
+
+    <div id="ui">
+        <div class="parameter"><img src="energy.png" alt="Energy">Energy: <span id="energy">0</span></div>
+        <div class="parameter"><img src="colony.png" alt="Colony">Colony: <span id="colony">0</span></div>
+        <div class="parameter"><img src="communication.png" alt="Communication">Communication: <span id="communication">0</span></div>
+        <div class="parameter"><img src="water.png" alt="Water">Water: <span id="water">0</span></div>
+        <div class="parameter"><img src="food.png" alt="Food">Food: <span id="food">0</span></div>
+        <div class="parameter"><img src="coins.png" alt="Coins">Coins: <span id="coins">0.0</span></div>
+        <div class="parameter"><img src="level.png" alt="Level">Level: <span id="level">1</span></div>
+        <div class="parameter"><img src="earnrate.png" alt="Earn Rate">Earn Rate: <span id="earnRate">0.1</span></div>
+    </div>
+
+    <div id="upgradePage">
+        <h1>Upgrade Page</h1>
+        <select id="upgradeSelect">
+            <option value="energy">Energy</option>
+            <option value="colony">Colony</option>
+            <option value="communication">Communication</option>
+            <option value="water">Water</option>
+            <option value="food">Food</option>
+        </select>
+        <div>Upgrade Cost: <span id="upgradeCost">0.4</span></div>
+        <button id="upgradeButton">Upgrade</button>
+        <button id="backToMain" onclick="window.location.href='index.html'">Back to Main Page</button>
+    </div>
+
+    <div id="referralPage">
+        <h1>Referral Page</h1>
+        <!-- Add referral content here -->
+        <button id="backToUpgrade" onclick="window.location.href='index.html'">Back to Main Page</button>
+    </div>
+
+    <div id="tasksPage">
+        <h1>Tasks Page</h1>
+        <div class="task"><img src="telegram.png" alt="Telegram">Join Telegram Channel for +150 coins</div>
+        <div class="task"><img src="x.png" alt="X">Join X for +150 coins</div>
+        <div class="task"><img src="youtube.png" alt="YouTube">Join YouTube for +150 coins</div>
+        <div class="task"><img src="website.png" alt="Website">Visit Website for +150 coins</div>
+        <button id="backToTasks" onclick="window.location.href='index.html'">Back to Main Page</button>
+    </div>
+</body>
+</html>
