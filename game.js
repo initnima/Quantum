@@ -163,16 +163,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     animate();
 
-    document.getElementById('toggleMenu').addEventListener('click', () => {
+    const addButtonEventListener = (id, callback) => {
+        const button = document.getElementById(id);
+        if (button) {
+            button.addEventListener('click', callback);
+            button.addEventListener('touchstart', callback);
+        }
+    };
+
+    addButtonEventListener('toggleMenu', () => {
         document.getElementById('ui').classList.remove('open');
         document.getElementById('upgradePage').classList.add('open');
     });
 
-    document.getElementById('toggleMenu2').addEventListener('click', () => {
+    addButtonEventListener('toggleMenu2', () => {
         player.startMining();
     });
 
-    document.getElementById('upgradeButton').addEventListener('click', () => {
+    addButtonEventListener('upgradeButton', () => {
         const parameter = document.getElementById('upgradeSelect').value;
         player.upgrade(parameter);
     });
@@ -181,25 +189,25 @@ document.addEventListener('DOMContentLoaded', () => {
         player.updateUpgradeCostText();
     });
 
-    document.getElementById('toggleMenuRefferals').addEventListener('click', () => {
+    addButtonEventListener('toggleMenuRefferals', () => {
         document.getElementById('ui').classList.remove('open');
         document.getElementById('referralPage').classList.add('open');
     });
 
-    document.getElementById('toggleMenuTasks').addEventListener('click', () => {
+    addButtonEventListener('toggleMenuTasks', () => {
         document.getElementById('ui').classList.remove('open');
         document.getElementById('tasksPage').classList.add('open');
     });
 
-    document.getElementById('backToMain').addEventListener('click', () => {
+    addButtonEventListener('backToMain', () => {
         window.location.href = 'index.html';
     });
 
-    document.getElementById('backToUpgrade').addEventListener('click', () => {
+    addButtonEventListener('backToUpgrade', () => {
         window.location.href = 'index.html';
     });
 
-    document.getElementById('backToTasks').addEventListener('click', () => {
+    addButtonEventListener('backToTasks', () => {
         window.location.href = 'index.html';
     });
 });
