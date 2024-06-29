@@ -167,7 +167,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const button = document.getElementById(id);
         if (button) {
             button.addEventListener('click', callback);
-            button.addEventListener('touchstart', callback);
+            button.addEventListener('touchstart', (event) => {
+                event.preventDefault();
+                callback();
+            });
         }
     };
 
@@ -203,11 +206,11 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = 'index.html';
     });
 
-    addButtonEventListener('backToUpgrade', () => {
+    addButtonEventListener('backToMainFromReferral', () => {
         window.location.href = 'index.html';
     });
 
-    addButtonEventListener('backToTasks', () => {
+    addButtonEventListener('backToMainFromTasks', () => {
         window.location.href = 'index.html';
     });
 });
