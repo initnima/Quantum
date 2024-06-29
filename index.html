@@ -21,7 +21,7 @@
             width: 80px;
         }
 
-        #toggleMenu, #toggleMenu2, #toggleMenuRefferals, #toggleMenuTasks {
+        .button {
             position: fixed;
             padding: 10px 20px;
             background-color: rgba(51, 138, 255, 0.7);
@@ -32,6 +32,7 @@
             cursor: pointer;
             max-width: 90%;
             box-sizing: border-box;
+            z-index: 10;
         }
 
         #toggleMenu {
@@ -58,7 +59,7 @@
             transform: translate(-50%, -50%);
         }
 
-        #ui, #upgradePage, #referralPage, #tasksPage {
+        .page {
             position: fixed;
             top: 0;
             left: 0;
@@ -74,7 +75,7 @@
             box-sizing: border-box;
         }
 
-        #ui.open, #upgradePage.open, #referralPage.open, #tasksPage.open {
+        .page.open {
             display: flex; /* Show when open */
         }
 
@@ -92,7 +93,7 @@
             100% { transform: scale(1.5); }
         }
 
-        #startMining, #backToMain, #backToUpgrade, #backToTasks {
+        .button-primary {
             padding: 10px 20px;
             background-color: #007bff;
             color: white;
@@ -126,12 +127,12 @@
 <body>
     <img id="logo" src="logo.png" alt="Logo">
 
-    <button id="toggleMenu2">Start Mining</button>
-    <button id="toggleMenu">Upgrade</button>
-    <button id="toggleMenuRefferals">Referrals</button>
-    <button id="toggleMenuTasks">Tasks</button>
+    <button id="toggleMenu2" class="button">Start Mining</button>
+    <button id="toggleMenu" class="button">Upgrade</button>
+    <button id="toggleMenuRefferals" class="button">Referrals</button>
+    <button id="toggleMenuTasks" class="button">Tasks</button>
 
-    <div id="ui">
+    <div id="ui" class="page">
         <div class="parameter"><img src="energy.png" alt="Energy">Energy: <span id="energy">0</span></div>
         <div class="parameter"><img src="colony.png" alt="Colony">Colony: <span id="colony">0</span></div>
         <div class="parameter"><img src="communication.png" alt="Communication">Communication: <span id="communication">0</span></div>
@@ -142,7 +143,7 @@
         <div class="parameter"><img src="earnrate.png" alt="Earn Rate">Earn Rate: <span id="earnRate">0.1</span></div>
     </div>
 
-    <div id="upgradePage">
+    <div id="upgradePage" class="page">
         <h1>Upgrade Page</h1>
         <select id="upgradeSelect">
             <option value="energy">Energy</option>
@@ -152,23 +153,23 @@
             <option value="food">Food</option>
         </select>
         <div>Upgrade Cost: <span id="upgradeCost">0.4</span></div>
-        <button id="upgradeButton">Upgrade</button>
-        <button id="backToMain" onclick="window.location.href='index.html'">Back to Main Page</button>
+        <button id="upgradeButton" class="button-primary">Upgrade</button>
+        <button id="backToMain" class="button-primary">Back to Main Page</button>
     </div>
 
-    <div id="referralPage">
+    <div id="referralPage" class="page">
         <h1>Referral Page</h1>
         <!-- Add referral content here -->
-        <button id="backToUpgrade" onclick="window.location.href='index.html'">Back to Main Page</button>
+        <button id="backToMainFromReferral" class="button-primary">Back to Main Page</button>
     </div>
 
-    <div id="tasksPage">
+    <div id="tasksPage" class="page">
         <h1>Tasks Page</h1>
         <div class="task"><img src="telegram.png" alt="Telegram">Join Telegram Channel for +150 coins</div>
         <div class="task"><img src="x.png" alt="X">Join X for +150 coins</div>
         <div class="task"><img src="youtube.png" alt="YouTube">Join YouTube for +150 coins</div>
         <div class="task"><img src="website.png" alt="Website">Visit Website for +150 coins</div>
-        <button id="backToTasks" onclick="window.location.href='index.html'">Back to Main Page</button>
+        <button id="backToMainFromTasks" class="button-primary">Back to Main Page</button>
     </div>
 </body>
 </html>
