@@ -116,6 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('coins').innerText = this.coins.toFixed(1);
             document.getElementById('level').innerText = this.level;
             document.getElementById('earnRate').innerText = this.earnRate.toFixed(1);
+            document.getElementById('coinBalanceValue').innerText = this.coins.toFixed(1);  // Update coin balance on main page
             this.updateUpgradeCostText();
         }
 
