@@ -21,6 +21,19 @@
             width: 80px;
         }
 
+        #coinBalance {
+            position: fixed;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            color: white;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 10px;
+            z-index: 10;
+        }
+
         .button {
             position: fixed;
             padding: 10px 20px;
@@ -126,6 +139,7 @@
 </head>
 <body>
     <img id="logo" src="logo.png" alt="Logo">
+    <div id="coinBalance">Coins: <span id="coinBalanceValue">0.0</span></div>
 
     <button id="toggleMenu2" class="button">Start Mining</button>
     <button id="toggleMenu" class="button">Upgrade</button>
