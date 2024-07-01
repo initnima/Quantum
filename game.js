@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.isMining = JSON.parse(localStorage.getItem('isMining')) || false;
             this.miningEndTime = parseInt(localStorage.getItem('miningEndTime')) || 0;
             this.referrals = JSON.parse(localStorage.getItem('referrals')) || [];
+            this.referralsData = JSON.parse(localStorage.getItem('referralsData')) || {};
 
             this.calculateOfflineEarnings();
 
@@ -183,11 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         generateReferralLink() {
             const referralCode = Math.random().toString(36).substring(2, 15);
-            const referral = {
-                code: referralCode,
-                referrals: []
-            };
-            this.referrals.push(referral);
+            this.referrals.push(referralCode);
             localStorage.setItem('referrals', JSON.stringify(this.referrals));
             return `${window.location.origin}?ref=${referralCode}`;
         }
@@ -195,19 +192,32 @@ document.addEventListener('DOMContentLoaded', () => {
         checkReferral() {
             const urlParams = new URLSearchParams(window.location.search);
             const ref = urlParams.get('ref');
-            if (ref && !this.referrals.some(referral => referral.code === ref)) {
-                const referral = {
-                    code: ref,
-                    id: this.id,
-                    name: `Player ${this.id}`,
-                    coinsMined: 0
-                };
-                const playerReferrals = JSON.parse(localStorage.getItem('playerReferrals')) || [];
-                playerReferrals.push(referral);
-                localStorage.setItem('playerReferrals', JSON.stringify(playerReferrals));
-                this.coins += 150; // Reward for being referred
-                localStorage.setItem('coins', this.coins);
-                this.updateUI();
+            if (ref) {
+                const referredPlayer = localStorage.getItem(`referral_${ref}`);
+                if (!referredPlayer) {
+                    this.coins += 150; // Reward for being referred
+                    localStorage.setItem('coins', this.coins);
+
+                    // Save referred player data
+                    const referrer = {
+                        referrerId: ref,
+                        id: this.id,
+                        coinsMined: this.coins
+                    };
+                    localStorage.setItem(`referral_${ref}`, JSON.stringify(referrer));
+
+                    // Update referrer's data
+                    const referrerData = this.referralsData[ref] || { totalCoins: 0, referrals: [] };
+                    referrerData.totalCoins += 150;
+                    referrerData.referrals.push(referrer);
+                    this.referralsData[ref] = referrerData;
+                    localStorage.setItem('referralsData', JSON.stringify(this.referralsData));
+                    this.updateUI();
+                }
+                // Redirect to referral page
+                document.getElementById('ui').classList.remove('open');
+                document.getElementById('referralPage').classList.add('open');
+                this.updateReferralPage();
             }
         }
 
@@ -233,6 +243,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 coins: this.coins,
                 level: this.level
             };
+        }
+
+        updateReferralPage() {
+            const referralList = document.getElementById('referralList');
+            referralList.innerHTML = '<h2>Your Referrals</h2>';
+            const playerReferrals = JSON.parse(localStorage.getItem('playerData')) || [];
+            playerReferrals.forEach(ref => {
+                const referrer = this.referralsData[ref.id];
+                if (referrer) {
+                    referralList.innerHTML += `<p>Referred by: ${referrer.referrerId}, Coins Mined: ${ref.coins}</p>`;
+                }
+            });
         }
     }
 
@@ -279,7 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
     addButtonEventListener('toggleMenuRefferals', () => {
         document.getElementById('ui').classList.remove('open');
         document.getElementById('referralPage').classList.add('open');
-        updateReferralPage();
+        player.updateReferralPage();
     });
 
     addButtonEventListener('toggleMenuTasks', () => {
@@ -304,19 +326,4 @@ document.addEventListener('DOMContentLoaded', () => {
     referralLinkElement.id = 'referralLink';
     referralLinkElement.innerHTML = `Your referral link: <a href="${player.generateReferralLink()}">${player.generateReferralLink()}</a>`;
     document.getElementById('referralPage').appendChild(referralLinkElement);
-
-    function updateReferralPage() {
-        const referralList = document.createElement('div');
-        referralList.id = 'referralList';
-        const playerReferrals = JSON.parse(localStorage.getItem('playerReferrals')) || [];
-        referralList.innerHTML = '<h2>Your Referrals</h2>';
-        playerReferrals.forEach(referral => {
-            referralList.innerHTML += `<p>Name: ${referral.name}, Coins Mined: ${referral.coinsMined}</p>`;
-        });
-        const existingList = document.getElementById('referralList');
-        if (existingList) {
-            existingList.remove();
-        }
-        document.getElementById('referralPage').appendChild(referralList);
-    }
 });
