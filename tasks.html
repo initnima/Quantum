@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasks Page</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background: url('bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .button-primary {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            max-width: 90%;
+            box-sizing: border-box;
+            transition: transform 0.3s;
+        }
+
+        .button-primary:hover {
+            transform: scale(1.1);
+        }
+
+        .task {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            max-width: 90%;
+            box-sizing: border-box;
+            color: white;
+            font-size: 20px;
+        }
+
+        .task img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+
+        #tasksContent {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+    </style>
+    <script src="game.js" defer></script>
+</head>
+<body>
+    <div id="tasksContent">
+        <h1>Tasks Page</h1>
+        <div class="task"><img src="telegram.png" alt="Telegram">Join Telegram Channel for +150 coins</div>
+        <div class="task"><img src="x.png" alt="X">Join X for +150 coins</div>
+        <div class="task"><img src="youtube.png" alt="YouTube">Join YouTube for +150 coins</div>
+        <div class="task"><img src="website.png" alt="Website">Visit Website for +150 coins</div>
+        <button class="button-primary" onclick="navigateTo('index.html')">Back to Main Page</button>
+    </div>
+
+    <script>
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+    </script>
+</body>
+</html>

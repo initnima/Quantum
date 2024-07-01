@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Referral Page</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background: url('bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .button-primary {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            max-width: 90%;
+            box-sizing: border-box;
+            transition: transform 0.3s;
+        }
+
+        .button-primary:hover {
+            transform: scale(1.1);
+        }
+
+        #referralContent {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+        }
+
+        #referralList {
+            margin-top: 20px;
+        }
+
+        #referralList p {
+            margin: 5px 0;
+        }
+    </style>
+    <script src="game.js" defer></script>
+</head>
+<body>
+    <div id="referralContent">
+        <h1>Referral Page</h1>
+        <div id="referralList"></div>
+        <button class="button-primary" onclick="navigateTo('index.html')">Back to Main Page</button>
+    </div>
+
+    <script>
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+    </script>
+</body>
+</html>

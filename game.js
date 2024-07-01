@@ -29,9 +29,13 @@ document.addEventListener('DOMContentLoaded', () => {
     light.position.set(10, 10, 10);
     scene.add(light);
 
-    const miningAnimation = document.createElement('div');
-    miningAnimation.className = 'mining-animation';
-    document.body.appendChild(miningAnimation);
+    function animate() {
+        requestAnimationFrame(animate);
+        planet.rotation.y += 0.01;
+        renderer.render(scene, camera);
+    }
+
+    animate();
 
     class Player {
         constructor() {
@@ -122,15 +126,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         updateUI() {
-            document.getElementById('energy').innerText = this.energy;
-            document.getElementById('colony').innerText = this.colony;
-            document.getElementById('communication').innerText = this.communication;
-            document.getElementById('water').innerText = this.water;
-            document.getElementById('food').innerText = this.food;
-            document.getElementById('coins').innerText = this.coins.toFixed(1);
-            document.getElementById('level').innerText = this.level;
-            document.getElementById('earnRate').innerText = this.earnRate.toFixed(1);
-            document.getElementById('coinBalanceValue').innerText = this.coins.toFixed(1);
+            if (document.getElementById('energy')) document.getElementById('energy').innerText = this.energy;
+            if (document.getElementById('colony')) document.getElementById('colony').innerText = this.colony;
+            if (document.getElementById('communication')) document.getElementById('communication').innerText = this.communication;
+            if (document.getElementById('water')) document.getElementById('water').innerText = this.water;
+            if (document.getElementById('food')) document.getElementById('food').innerText = this.food;
+            if (document.getElementById('coins')) document.getElementById('coins').innerText = this.coins.toFixed(1);
+            if (document.getElementById('level')) document.getElementById('level').innerText = this.level;
+            if (document.getElementById('earnRate')) document.getElementById('earnRate').innerText = this.earnRate.toFixed(1);
+            if (document.getElementById('coinBalanceValue')) document.getElementById('coinBalanceValue').innerText = this.coins.toFixed(1);
             this.updateUpgradeCostText();
             this.updateMiningTimer();
         }
@@ -156,8 +160,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         updateUpgradeCostText() {
-            const parameter = document.getElementById('upgradeSelect').value;
-            document.getElementById('upgradeCost').innerText = this.upgradeCosts[parameter].toFixed(1);
+            const parameter = document.getElementById('upgradeSelect') ? document.getElementById('upgradeSelect').value : null;
+            if (parameter) {
+                document.getElementById('upgradeCost').innerText = this.upgradeCosts[parameter].toFixed(1);
+            }
         }
 
         updateMiningTimer() {
@@ -167,141 +173,125 @@ document.addEventListener('DOMContentLoaded', () => {
                 const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
                 const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-                document.getElementById('miningTime').innerText = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                if (document.getElementById('miningTime')) {
+                    document.getElementById('miningTime').innerText = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
             } else {
-                document.getElementById('miningTime').innerText = '00:00:00';
+                if (document.getElementById('miningTime')) {
+                    document.getElementById('miningTime').innerText = '00:00:00';
+                }
             }
         }
 
         showMiningAnimation() {
-            miningAnimation.style.display = 'block';
-            miningAnimation.style.top = `${window.innerHeight / 2 - 25}px`;
-            miningAnimation.style.left = `${window.innerWidth / 2 - 25}px`;
+            const miningAnimation = document.createElement('div');
+            miningAnimation.className = 'mining-animation';
+            miningAnimation.innerText = `+${this.earnRate.toFixed(1)}`;
+            document.body.appendChild(miningAnimation);
             setTimeout(() => {
-                miningAnimation.style.display = 'none';
+                document.body.removeChild(miningAnimation);
             }, 2000);
         }
 
-            generateReferralLink() {
-        const referralCode = Math.random().toString(36).substring(2, 15);
-        this.referrals.push(referralCode);
-        localStorage.setItem('referrals', JSON.stringify(this.referrals));
-        console.log("Referral link generated: ", referralCode); // Debugging log
-        return `${window.location.origin}?ref=${referralCode}`;
-    }
+        generateReferralLink() {
+            const referralCode = Math.random().toString(36).substring(2, 15);
+            this.referrals.push(referralCode);
+            localStorage.setItem('referrals', JSON.stringify(this.referrals));
+            return `${window.location.origin}?ref=${referralCode}`;
+        }
 
-    checkReferral() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const ref = urlParams.get('ref');
-        if (ref) {
-            console.log("Referral code found: ", ref); // Debugging log
-            let referredPlayer = JSON.parse(localStorage.getItem(`referral_${ref}`));
-            if (!referredPlayer) {
-                this.coins += 150; // Reward for being referred
-                localStorage.setItem('coins', this.coins);
+        checkReferral() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const ref = urlParams.get('ref');
+            if (ref) {
+                let referredPlayer = JSON.parse(localStorage.getItem(`referral_${ref}`));
+                if (!referredPlayer) {
+                    this.coins += 150; // Reward for being referred
+                    localStorage.setItem('coins', this.coins);
 
-                // Save referred player data
-                referredPlayer = {
-                    referrerId: ref,
-                    id: this.id,
-                    coinsMined: this.coins
-                };
-                localStorage.setItem(`referral_${ref}`, JSON.stringify(referredPlayer));
-                console.log("Referred player saved: ", referredPlayer); // Debugging log
+                    // Save referred player data
+                    referredPlayer = {
+                        referrerId: ref,
+                        id: this.id,
+                        coinsMined: this.coins
+                    };
+                    localStorage.setItem(`referral_${ref}`, JSON.stringify(referredPlayer));
 
-                // Update referrer's data
-                const referrerData = this.referralsData[ref] || { totalCoins: 0, referrals: [] };
-                referrerData.totalCoins += 150;
-                referrerData.referrals.push(referredPlayer);
-                this.referralsData[ref] = referrerData;
-                localStorage.setItem('referralsData', JSON.stringify(this.referralsData));
-                this.updateUI();
+                    // Update referrer's data
+                    const referrerData = this.referralsData[ref] || { totalCoins: 0, referrals: [] };
+                    referrerData.totalCoins += 150;
+                    referrerData.referrals.push(referredPlayer);
+                    this.referralsData[ref] = referrerData;
+                    localStorage.setItem('referralsData', JSON.stringify(this.referralsData));
+                    this.updateUI();
+                }
+                // Redirect to referral page
+                window.location.href = 'referrals.html';
             }
-            // Redirect to referral page
-            document.getElementById('ui').classList.remove('open');
-            document.getElementById('referralPage').classList.add('open');
-            this.updateReferralPage();
+        }
+
+        savePlayerData() {
+            const playerData = {
+                id: this.id,
+                energy: this.energy,
+                colony: this.colony,
+                communication: this.communication,
+                water: this.water,
+                food: this.food,
+                coins: this.coins,
+                level: this.level,
+                lastLoginTime: this.lastLoginTime,
+                isMining: this.isMining,
+                miningEndTime: this.miningEndTime,
+                referrals: this.referrals,
+                referralsData: this.referralsData
+            };
+
+            // Save to localStorage as a backup
+            localStorage.setItem('playerData', JSON.stringify(playerData));
+        }
+
+        getPlayerData() {
+            return {
+                id: this.id,
+                energy: this.energy,
+                colony: this.colony,
+                communication: this.communication,
+                water: this.water,
+                food: this.food,
+                coins: this.coins,
+                level: this.level
+            };
+        }
+
+        updateReferralPage() {
+            const referralList = document.getElementById('referralList');
+            referralList.innerHTML = '<h2>Your Referrals</h2>';
+            const playerReferrals = JSON.parse(localStorage.getItem('referralsData')) || {};
+            const currentPlayerReferrals = playerReferrals[this.id] || { referrals: [] };
+            currentPlayerReferrals.referrals.forEach(ref => {
+                referralList.innerHTML += `<p>Referred by: ${ref.referrerId}, Coins Mined: ${ref.coinsMined}</p>`;
+            });
         }
     }
-
-    updateReferralPage() {
-        const referralList = document.getElementById('referralList');
-        referralList.innerHTML = '<h2>Your Referrals</h2>';
-        const playerReferrals = JSON.parse(localStorage.getItem('referralsData')) || {};
-        console.log("Player referrals data: ", playerReferrals); // Debugging log
-        const currentPlayerReferrals = playerReferrals[this.id] || { referrals: [] };
-        currentPlayerReferrals.referrals.forEach(ref => {
-            referralList.innerHTML += `<p>Referred by: ${ref.referrerId}, Coins Mined: ${ref.coinsMined}</p>`;
-        });
-    }
-
 
     const player = new Player();
     player.checkReferral();
 
-    function animate() {
-        requestAnimationFrame(animate);
-        planet.rotation.y += 0.01;
-        renderer.render(scene, camera);
+    if (document.getElementById('upgradeButton')) {
+        document.getElementById('upgradeButton').addEventListener('click', () => {
+            const parameter = document.getElementById('upgradeSelect').value;
+            player.upgrade(parameter);
+        });
     }
 
-    animate();
+    if (document.getElementById('upgradeSelect')) {
+        document.getElementById('upgradeSelect').addEventListener('change', () => {
+            player.updateUpgradeCostText();
+        });
+    }
 
-    const addButtonEventListener = (id, callback) => {
-        const button = document.getElementById(id);
-        if (button) {
-            button.addEventListener('click', callback);
-            button.addEventListener('touchstart', (event) => {
-                event.preventDefault();
-                callback();
-            }, { passive: false });
-        }
-    };
-
-    addButtonEventListener('toggleMenu', () => {
-        document.getElementById('ui').classList.remove('open');
-        document.getElementById('upgradePage').classList.add('open');
-    });
-
-    addButtonEventListener('toggleMenu2', () => {
-        player.startMining();
-    });
-
-    addButtonEventListener('upgradeButton', () => {
-        const parameter = document.getElementById('upgradeSelect').value;
-        player.upgrade(parameter);
-    });
-
-    document.getElementById('upgradeSelect').addEventListener('change', () => {
-        player.updateUpgradeCostText();
-    });
-
-    addButtonEventListener('toggleMenuRefferals', () => {
-        document.getElementById('ui').classList.remove('open');
-        document.getElementById('referralPage').classList.add('open');
+    if (document.getElementById('referralList')) {
         player.updateReferralPage();
-    });
-
-    addButtonEventListener('toggleMenuTasks', () => {
-        document.getElementById('ui').classList.remove('open');
-        document.getElementById('tasksPage').classList.add('open');
-    });
-
-    addButtonEventListener('backToMain', () => {
-        window.location.href = 'index.html';
-    });
-
-    addButtonEventListener('backToMainFromReferral', () => {
-        window.location.href = 'index.html';
-    });
-
-    addButtonEventListener('backToMainFromTasks', () => {
-        window.location.href = 'index.html';
-    });
-
-    // Generate and display referral link
-    const referralLinkElement = document.createElement('div');
-    referralLinkElement.id = 'referralLink';
-    referralLinkElement.innerHTML = `Your referral link: <a href="${player.generateReferralLink()}">${player.generateReferralLink()}</a>`;
-    document.getElementById('referralPage').appendChild(referralLinkElement);
+    }
 });

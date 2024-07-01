@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upgrade Page</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background: url('bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .button-primary {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            max-width: 90%;
+            box-sizing: border-box;
+            transition: transform 0.3s;
+        }
+
+        .button-primary:hover {
+            transform: scale(1.1);
+        }
+
+        .parameter {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+            max-width: 90%;
+            box-sizing: border-box;
+            color: white;
+            font-size: 20px;
+        }
+
+        .parameter img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+
+        #upgradeContent {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        #upgradeContent h1 {
+            color: white;
+            margin-bottom: 20px;
+        }
+    </style>
+    <script src="game.js" defer></script>
+</head>
+<body>
+    <div id="upgradeContent">
+        <h1>Upgrade Page</h1>
+        <div class="parameter"><img src="energy.png" alt="Energy">Energy: <span id="energy">0</span></div>
+        <div class="parameter"><img src="colony.png" alt="Colony">Colony: <span id="colony">0</span></div>
+        <div class="parameter"><img src="communication.png" alt="Communication">Communication: <span id="communication">0</span></div>
+        <div class="parameter"><img src="water.png" alt="Water">Water: <span id="water">0</span></div>
+        <div class="parameter"><img src="food.png" alt="Food">Food: <span id="food">0</span></div>
+        <div class="parameter"><img src="coins.png" alt="Coins">Coins: <span id="coins">0.0</span></div>
+        <div class="parameter"><img src="level.png" alt="Level">Level: <span id="level">1</span></div>
+        <div class="parameter"><img src="earnrate.png" alt="Earn Rate">Earn Rate: <span id="earnRate">0.1</span></div>
+        <select id="upgradeSelect">
+            <option value="energy">Energy</option>
+            <option value="colony">Colony</option>
+            <option value="communication">Communication</option>
+            <option value="water">Water</option>
+            <option value="food">Food</option>
+        </select>
+        <div>Upgrade Cost: <span id="upgradeCost">0.4</span></div>
+        <button id="upgradeButton" class="button-primary">Upgrade</button>
+        <button class="button-primary" onclick="navigateTo('index.html')">Back to Main Page</button>
+    </div>
+
+    <script>
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+    </script>
+</body>
+</html>
