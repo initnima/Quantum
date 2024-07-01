@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     class Player {
         constructor() {
+            this.id = localStorage.getItem('playerId') || this.generatePlayerId();
             this.energy = parseInt(localStorage.getItem('energy')) || 0;
             this.colony = parseInt(localStorage.getItem('colony')) || 0;
             this.communication = parseInt(localStorage.getItem('communication')) || 0;
@@ -53,6 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.lastLoginTime = parseInt(localStorage.getItem('lastLoginTime')) || Date.now();
             this.isMining = JSON.parse(localStorage.getItem('isMining')) || false;
             this.miningEndTime = parseInt(localStorage.getItem('miningEndTime')) || 0;
+            this.referrals = JSON.parse(localStorage.getItem('referrals')) || [];
 
             this.calculateOfflineEarnings();
 
@@ -60,9 +62,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.earnCoins();
             }, 1000);
 
+            setInterval(() => {
+                this.updateMiningTimer();
+            }, 1000);
+
             this.checkMiningStatus();
 
             this.updateUI();
+            this.savePlayerData();
+        }
+
+        generatePlayerId() {
+            const playerId = Math.random().toString(36).substring(2, 15);
+            localStorage.setItem('playerId', playerId);
+            return playerId;
         }
 
         calculateOfflineEarnings() {
@@ -116,8 +129,9 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('coins').innerText = this.coins.toFixed(1);
             document.getElementById('level').innerText = this.level;
             document.getElementById('earnRate').innerText = this.earnRate.toFixed(1);
-            document.getElementById('coinBalanceValue').innerText = this.coins.toFixed(1);  // Update coin balance on main page
+            document.getElementById('coinBalanceValue').innerText = this.coins.toFixed(1);
             this.updateUpgradeCostText();
+            this.updateMiningTimer();
         }
 
         startMining() {
@@ -126,6 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('isMining', JSON.stringify(this.isMining));
             localStorage.setItem('miningEndTime', this.miningEndTime);
             this.showMiningAnimation();
+            this.updateMiningTimer();
         }
 
         checkMiningStatus() {
@@ -144,6 +159,19 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('upgradeCost').innerText = this.upgradeCosts[parameter].toFixed(1);
         }
 
+        updateMiningTimer() {
+            const now = Date.now();
+            const timeRemaining = this.miningEndTime - now;
+            if (timeRemaining > 0) {
+                const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
+                const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+                document.getElementById('miningTime').innerText = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            } else {
+                document.getElementById('miningTime').innerText = '00:00:00';
+            }
+        }
+
         showMiningAnimation() {
             miningAnimation.style.display = 'block';
             miningAnimation.style.top = `${window.innerHeight / 2 - 25}px`;
@@ -152,9 +180,51 @@ document.addEventListener('DOMContentLoaded', () => {
                 miningAnimation.style.display = 'none';
             }, 2000);
         }
+
+        generateReferralLink() {
+            const referralCode = Math.random().toString(36).substring(2, 15);
+            this.referrals.push(referralCode);
+            localStorage.setItem('referrals', JSON.stringify(this.referrals));
+            return `${window.location.origin}?ref=${referralCode}`;
+        }
+
+        checkReferral() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const ref = urlParams.get('ref');
+            if (ref && !this.referrals.includes(ref)) {
+                this.coins += 150; // Reward for being referred
+                localStorage.setItem('coins', this.coins);
+                this.updateUI();
+            }
+        }
+
+        savePlayerData() {
+            const playerData = JSON.parse(localStorage.getItem('playerData')) || [];
+            const existingPlayerIndex = playerData.findIndex(player => player.id === this.id);
+            if (existingPlayerIndex >= 0) {
+                playerData[existingPlayerIndex] = this.getPlayerData();
+            } else {
+                playerData.push(this.getPlayerData());
+            }
+            localStorage.setItem('playerData', JSON.stringify(playerData));
+        }
+
+        getPlayerData() {
+            return {
+                id: this.id,
+                energy: this.energy,
+                colony: this.colony,
+                communication: this.communication,
+                water: this.water,
+                food: this.food,
+                coins: this.coins,
+                level: this.level
+            };
+        }
     }
 
     const player = new Player();
+    player.checkReferral();
 
     function animate() {
         requestAnimationFrame(animate);
@@ -214,4 +284,10 @@ document.addEventListener('DOMContentLoaded', () => {
     addButtonEventListener('backToMainFromTasks', () => {
         window.location.href = 'index.html';
     });
+
+    // Generate and display referral link
+    const referralLinkElement = document.createElement('div');
+    referralLinkElement.id = 'referralLink';
+    referralLinkElement.innerHTML = `Your referral link: <a href="${player.generateReferralLink()}">${player.generateReferralLink()}</a>`;
+    document.getElementById('referralPage').appendChild(referralLinkElement);
 });
