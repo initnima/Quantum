@@ -248,12 +248,10 @@ document.addEventListener('DOMContentLoaded', () => {
         updateReferralPage() {
             const referralList = document.getElementById('referralList');
             referralList.innerHTML = '<h2>Your Referrals</h2>';
-            const playerReferrals = JSON.parse(localStorage.getItem('playerData')) || [];
-            playerReferrals.forEach(ref => {
-                const referrer = this.referralsData[ref.id];
-                if (referrer) {
-                    referralList.innerHTML += `<p>Referred by: ${referrer.referrerId}, Coins Mined: ${ref.coins}</p>`;
-                }
+            const playerReferrals = JSON.parse(localStorage.getItem('referralsData')) || {};
+            const currentPlayerReferrals = playerReferrals[this.id] || { referrals: [] };
+            currentPlayerReferrals.referrals.forEach(ref => {
+                referralList.innerHTML += `<p>Referred by: ${ref.referrerId}, Coins Mined: ${ref.coinsMined}</p>`;
             });
         }
     }
