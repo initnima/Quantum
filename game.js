@@ -193,23 +193,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const ref = urlParams.get('ref');
             if (ref) {
-                const referredPlayer = localStorage.getItem(`referral_${ref}`);
+                let referredPlayer = JSON.parse(localStorage.getItem(`referral_${ref}`));
                 if (!referredPlayer) {
                     this.coins += 150; // Reward for being referred
                     localStorage.setItem('coins', this.coins);
 
                     // Save referred player data
-                    const referrer = {
+                    referredPlayer = {
                         referrerId: ref,
                         id: this.id,
                         coinsMined: this.coins
                     };
-                    localStorage.setItem(`referral_${ref}`, JSON.stringify(referrer));
+                    localStorage.setItem(`referral_${ref}`, JSON.stringify(referredPlayer));
 
                     // Update referrer's data
                     const referrerData = this.referralsData[ref] || { totalCoins: 0, referrals: [] };
                     referrerData.totalCoins += 150;
-                    referrerData.referrals.push(referrer);
+                    referrerData.referrals.push(referredPlayer);
                     this.referralsData[ref] = referrerData;
                     localStorage.setItem('referralsData', JSON.stringify(this.referralsData));
                     this.updateUI();
